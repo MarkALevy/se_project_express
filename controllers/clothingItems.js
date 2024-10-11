@@ -66,6 +66,12 @@ const likeItem = (req, res) => {
           .status(NON_EXISTING_ADDRESS_CODE)
           .send({ message: err.message });
       }
+      if (err.name === 'CastError') {
+        return res
+          .status(INVALID_DATA_PASSED_CODE)
+          .send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR_CODE).send({ message: err.message });
     });
 };
 
@@ -85,6 +91,12 @@ const dislikeItem = (req, res) => {
           .status(NON_EXISTING_ADDRESS_CODE)
           .send({ message: err.message });
       }
+      if (err.name === 'CastError') {
+        return res
+          .status(INVALID_DATA_PASSED_CODE)
+          .send({ message: err.message });
+      }
+      return res.status(DEFAULT_ERROR_CODE).send({ message: err.message });
     });
 };
 
