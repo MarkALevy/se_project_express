@@ -10,7 +10,9 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send({ data: users }))
     .catch((err) => {
       console.error(err);
-      return res.status(DEFAULT_ERROR_CODE).send({ message: err.message });
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: 'An error has occurred on the server' });
     });
 };
 
@@ -24,14 +26,16 @@ const getUser = (req, res) => {
       if (err.name === 'DocumentNotFoundError') {
         return res
           .status(NON_EXISTING_ADDRESS_CODE)
-          .send({ message: err.message });
+          .send({ message: 'Requested resource not found' });
       }
       if (err.name === 'CastError') {
         return res
           .status(INVALID_DATA_PASSED_CODE)
-          .send({ message: err.message });
+          .send({ message: 'Invalid data' });
       }
-      return res.status(DEFAULT_ERROR_CODE).send({ message: err.message });
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: 'An error has occurred on the server' });
     });
 };
 
@@ -44,9 +48,11 @@ const createUser = (req, res) => {
       if (err.name === 'ValidationError') {
         return res
           .status(INVALID_DATA_PASSED_CODE)
-          .send({ message: err.message });
+          .send({ message: 'Invalid data' });
       }
-      return res.status(DEFAULT_ERROR_CODE).send({ message: err.message });
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: 'An error has occurred on the server' });
     });
 };
 
