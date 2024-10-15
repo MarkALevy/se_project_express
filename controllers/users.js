@@ -91,4 +91,27 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUser, getUsers, createUser, login };
+const getCurrentUser = (req, res) => {
+  const { userId } = req.params;
+  User.findById(userId)
+    .orFail()
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === 'DocumentNotFoundError') {
+        return res
+          .status(NON_EXISTING_ADDRESS_CODE)
+          .send({ message: 'Requested resource not found' });
+      }
+      if (err.name === 'CastError') {
+        return res
+          .status(INVALID_DATA_PASSED_CODE)
+          .send({ message: 'Invalid data' });
+      }
+      return res
+        .status(DEFAULT_ERROR_CODE)
+        .send({ message: 'An error has occurred on the server' });
+    });
+};
+
+module.exports = { getUser, getUsers, createUser, login, getCurrentUser };
