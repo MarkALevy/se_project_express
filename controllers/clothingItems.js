@@ -42,7 +42,7 @@ const deleteItem = (req, res) => {
     .then((item) => {
       if (item.owner !== req.user._id) {
         return res
-          .status(FORBIDDEN_ERROR_CODE)
+          .status(INVALID_DATA_PASSED_CODE)
           .send({ message: 'Invalid permissions to delete item' });
       }
     });
@@ -104,7 +104,6 @@ const dislikeItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
-      console.log('Error is:XXXXX' + err.name);
       console.error(err);
       if (err.name === 'DocumentNotFoundError') {
         return res

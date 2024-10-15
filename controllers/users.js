@@ -96,7 +96,7 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      res.status(AUTHENTICATION_ERROR_CODE).send({ message: err.message });
+      res.status(INVALID_DATA_PASSED_CODE).send({ message: err.message });
     });
 };
 
