@@ -12,6 +12,7 @@ const auth = (req, res, next) => {
   }
 
   const token = authorization.replace('Bearer ', '');
+
   let payload;
 
   try {
@@ -24,7 +25,7 @@ const auth = (req, res, next) => {
   }
   req.user = payload;
 
-  next();
+  return next();
 };
 
 module.exports = { auth };

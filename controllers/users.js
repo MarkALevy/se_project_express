@@ -45,7 +45,6 @@ const getUser = (req, res) => {
 
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
-
   User.findOne({ email })
     .select('+password')
     .then((user) => {
@@ -60,10 +59,18 @@ const createUser = (req, res) => {
       return User.create({ name, avatar, email, password: hash });
     })
     .then((user) => {
-      res.status(201).send({ data: user });
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: '1h',
+      });
+
+      res.status(201).send({
+        token,
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+      });
     })
     .catch((err) => {
-      console.log(err.name);
       console.error(err);
       if (err.message === 'A user with this email already exists') {
         res.status(409).send({ message: err.message });
@@ -85,6 +92,7 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '7d',
       });
+
       res.send({ token });
     })
     .catch((err) => {
