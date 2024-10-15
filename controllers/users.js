@@ -92,7 +92,7 @@ const login = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user._id;
   User.findById(userId)
     .orFail()
     .then((user) => res.status(200).send({ data: user }))
@@ -114,4 +114,38 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-module.exports = { getUser, getUsers, createUser, login, getCurrentUser };
+const updateUser = (req, res) => {
+  const { name, avatar } = req.body;
+  const userId = req.user._id;
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .then((updatedUser) => {
+      if (!updatedUser) {
+        return res
+          .status(NON_EXISTING_ADDRESS_CODE)
+          .send({ message: 'User not found' });
+      }
+      res.send(updatedUser);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(INVALID_DATA_PASSED_CODE).send({ message: 'Invalid data' });
+      } else {
+        res
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: 'An error has occurred on the server' });
+      }
+    });
+};
+
+module.exports = {
+  getUser,
+  getUsers,
+  createUser,
+  login,
+  getCurrentUser,
+  updateUser,
+};
