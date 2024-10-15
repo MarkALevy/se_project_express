@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 const {
   INVALID_DATA_PASSED_CODE,
   NON_EXISTING_ADDRESS_CODE,
@@ -40,20 +41,27 @@ const getUser = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
-  User.create({ name, avatar })
-    .then((user) => res.status(201).send({ data: user }))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === 'ValidationError') {
+  const { name, avatar, email, password } = req.body;
+  User.findOne({ email }).then((user) => {
+    if (user) {
+      return Promise.reject(new Error('A user with this email already exists'));
+    }
+    return bcrypt
+      .hash(password, 10)
+      .then((hash) => User.create({ name, avatar, email, password: hash }))
+      .then((user) => res.status(201).send({ data: user }))
+      .catch((err) => {
+        console.error(err);
+        if (err.name === 'ValidationError') {
+          return res
+            .status(INVALID_DATA_PASSED_CODE)
+            .send({ message: 'Invalid data' });
+        }
         return res
-          .status(INVALID_DATA_PASSED_CODE)
-          .send({ message: 'Invalid data' });
-      }
-      return res
-        .status(DEFAULT_ERROR_CODE)
-        .send({ message: 'An error has occurred on the server' });
-    });
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: 'An error has occurred on the server' });
+      });
+  });
 };
 
 module.exports = { getUser, getUsers, createUser };
