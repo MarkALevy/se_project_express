@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const mainRouter = require('./routes/index');
 const { NON_EXISTING_ADDRESS_CODE } = require('./utils/errors');
+const { login, createUser } = require('./controllers/users');
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -24,6 +25,9 @@ app.use((req, res, next) => {
   };
   next();
 });
+
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 app.use('/', mainRouter);
 
