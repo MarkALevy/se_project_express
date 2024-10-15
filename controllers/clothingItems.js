@@ -3,6 +3,7 @@ const {
   INVALID_DATA_PASSED_CODE,
   NON_EXISTING_ADDRESS_CODE,
   DEFAULT_ERROR_CODE,
+  FORBIDDEN_ERROR_CODE,
 } = require('../utils/errors');
 
 const getItems = (req, res) => {
@@ -36,6 +37,15 @@ const createItem = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
+  Item.findOne({ _id: itemId })
+    .orFail()
+    .then((item) => {
+      if (item.owner !== req.user._id) {
+        return res
+          .status(FORBIDDEN_ERROR_CODE)
+          .send({ message: 'Invalid permissions to delete item' });
+      }
+    });
   Item.deleteOne({ _id: itemId })
     .orFail()
     .then((item) => res.status(200).send({ data: item }))

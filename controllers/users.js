@@ -47,6 +47,7 @@ const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
   User.findOne({ email })
+    .select('+password')
     .then((user) => {
       if (user) {
         return Promise.reject(

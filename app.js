@@ -19,13 +19,6 @@ mongoose
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '670953bcc564df3700ee8a44',
-  };
-  next();
-});
-
 app.post('/signin', login);
 app.post('/signup', createUser);
 
