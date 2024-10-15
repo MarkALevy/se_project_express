@@ -48,7 +48,7 @@ const deleteItem = (req, res) => {
         Item.deleteOne({ _id: itemId })
           .orFail()
           .then((item) => res.status(200).send({ data: item }))
-          .catch((err) => {
+          .catch(() => {
             return res
               .status(DEFAULT_ERROR_CODE)
               .send({ message: 'An error has occurred on the server' });

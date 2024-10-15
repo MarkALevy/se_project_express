@@ -4,7 +4,6 @@ const {
   INVALID_DATA_PASSED_CODE,
   NON_EXISTING_ADDRESS_CODE,
   DEFAULT_ERROR_CODE,
-  AUTHENTICATION_ERROR_CODE,
 } = require('../utils/errors');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../utils/config');
