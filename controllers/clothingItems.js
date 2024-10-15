@@ -40,15 +40,21 @@ const deleteItem = (req, res) => {
   Item.findOne({ _id: itemId })
     .orFail()
     .then((item) => {
-      if (item.owner !== req.user._id) {
+      if (item.owner != req.user._id) {
         return res
-          .status(INVALID_DATA_PASSED_CODE)
+          .status(FORBIDDEN_ERROR_CODE)
           .send({ message: 'Invalid permissions to delete item' });
+      } else {
+        Item.deleteOne({ _id: itemId })
+          .orFail()
+          .then((item) => res.status(200).send({ data: item }))
+          .catch((err) => {
+            return res
+              .status(DEFAULT_ERROR_CODE)
+              .send({ message: 'An error has occurred on the server' });
+          });
       }
-    });
-  Item.deleteOne({ _id: itemId })
-    .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === 'DocumentNotFoundError') {
