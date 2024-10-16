@@ -40,20 +40,19 @@ const deleteItem = (req, res) => {
   Item.findOne({ _id: itemId })
     .orFail()
     .then((item) => {
-      if (item.owner != req.user._id) {
+      if (item.owner.toString() !== req.user._id) {
         return res
           .status(FORBIDDEN_ERROR_CODE)
           .send({ message: 'Invalid permissions to delete item' });
-      } else {
-        Item.deleteOne({ _id: itemId })
-          .orFail()
-          .then((item) => res.status(200).send({ data: item }))
-          .catch(() => {
-            return res
-              .status(DEFAULT_ERROR_CODE)
-              .send({ message: 'An error has occurred on the server' });
-          });
       }
+      return Item.deleteOne({ _id: itemId })
+        .orFail()
+        .then(() => res.status(200).send({ data: item }))
+        .catch(() =>
+          res
+            .status(DEFAULT_ERROR_CODE)
+            .send({ message: 'An error has occurred on the server' })
+        );
     })
     .catch((err) => {
       console.error(err);

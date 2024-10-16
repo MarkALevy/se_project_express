@@ -1,5 +1,6 @@
-const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 const {
   INVALID_DATA_PASSED_CODE,
   NON_EXISTING_ADDRESS_CODE,
@@ -7,7 +8,6 @@ const {
   CONFLICT_ERROR_CODE,
   AUTHENTICATION_ERROR_CODE,
 } = require('../utils/errors');
-const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../utils/config');
 
 const createUser = (req, res) => {
@@ -22,9 +22,7 @@ const createUser = (req, res) => {
       }
       return bcrypt.hash(password, 10);
     })
-    .then((hash) => {
-      return User.create({ name, avatar, email, password: hash });
-    })
+    .then((hash) => User.create({ name, avatar, email, password: hash }))
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: '1h',
@@ -113,7 +111,7 @@ const updateUser = (req, res) => {
           .status(NON_EXISTING_ADDRESS_CODE)
           .send({ message: 'User not found' });
       }
-      res.send(updatedUser);
+      return res.send(updatedUser);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
