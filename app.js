@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const mainRouter = require('./routes/index');
 const { NON_EXISTING_ADDRESS_CODE } = require('./utils/errors');
+const cors = require('cors');
 
 const app = express();
 const { PORT = 3001 } = process.env;
@@ -15,7 +16,7 @@ mongoose
     console.log('Connected to DB');
   })
   .catch(console.error);
-
+app.use(cors());
 app.use(express.json());
 
 app.use('/', mainRouter);
