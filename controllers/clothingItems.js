@@ -9,7 +9,7 @@ const getItems = (req, res, next) => {
   Item.find({})
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
-      next(err);
+      return next(err);
     });
 };
 
@@ -21,9 +21,9 @@ const createItem = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError('Invalid data'));
       } else {
-        next(err);
+        return next(err);
       }
     });
 };
@@ -34,22 +34,24 @@ const deleteItem = (req, res, next) => {
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
-        next(new ForbiddenError('Invalid permissions to delete item'));
+        return next(new ForbiddenError('Invalid permissions to delete item'));
       } else {
         return Item.deleteOne({ _id: itemId })
           .orFail()
           .then(() => res.status(200).send({ data: item }))
-          .catch(() => next(err));
+          .catch((err) => {
+            return next(err);
+          });
       }
     })
     .catch((err) => {
       console.error(err);
       if (err.name === 'DocumentNotFoundError') {
-        next(new NotFoundError('Requested resource not found'));
+        return next(new NotFoundError('Requested resource not found'));
       } else if (err.name === 'CastError') {
-        next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError('Invalid data'));
       } else {
-        next(err);
+        return next(err);
       }
     });
 };
@@ -65,11 +67,11 @@ const likeItem = (req, res, next) => {
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        next(new NotFoundError('Requested resource not found'));
+        return next(new NotFoundError('Requested resource not found'));
       } else if (err.name === 'CastError') {
-        next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError('Invalid data'));
       } else {
-        next(err);
+        return next(err);
       }
     });
 };
@@ -85,11 +87,11 @@ const dislikeItem = (req, res, next) => {
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
-        next(new NotFoundError('Requested resource not found'));
+        return next(new NotFoundError('Requested resource not found'));
       } else if (err.name === 'CastError') {
-        next(new BadRequestError('Invalid data'));
+        return next(new BadRequestError('Invalid data'));
       } else {
-        next(err);
+        return next(err);
       }
     });
 };
