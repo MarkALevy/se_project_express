@@ -34,23 +34,21 @@ const deleteItem = (req, res, next) => {
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
-        next(new ForbiddenError('Invalid permissions to delete item'));
-      } else {
-        return Item.deleteOne({ _id: itemId })
-          .orFail()
-          .then(() => res.status(200).send({ data: item }))
-          .catch((err) => next(err));
+        return next(new ForbiddenError('Invalid permissions to delete item'));
       }
+      return Item.deleteOne({ _id: itemId })
+        .orFail()
+        .then(() => res.status(200).send({ data: item }))
+        .catch((err) => next(err));
     })
     .catch((err) => {
       console.error(err);
       if (err.name === 'DocumentNotFoundError') {
-        next(new NotFoundError('Requested resource not found'));
+        return next(new NotFoundError('Requested resource not found'));
       } else if (err.name === 'CastError') {
-        next(new BadRequestError('Invalid data'));
-      } else {
-        next(err);
+        return next(new BadRequestError('Invalid data'));
       }
+      return next(err);
     });
 };
 

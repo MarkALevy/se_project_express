@@ -50,29 +50,30 @@ const createUser = (req, res, next) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    next(new BadRequestError('The password and email fields are required'));
-  } else {
-    return User.findUserByCredentials(email, password)
-      .then((user) => {
-        const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-          expiresIn: '7d',
-        });
-        res.send({
-          token,
-          name: user.name,
-          avatar: user.avatar,
-          email: user.email,
-          _id: user._id,
-        });
-      })
-      .catch((err) => {
-        if (err.message === 'Incorrect email or password') {
-          next(new UnauthorizedError());
-        } else {
-          next(err);
-        }
-      });
+    return next(
+      new BadRequestError('The password and email fields are required')
+    );
   }
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: '7d',
+      });
+      res.send({
+        token,
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      });
+    })
+    .catch((err) => {
+      if (err.message === 'Incorrect email or password') {
+        next(new UnauthorizedError());
+      } else {
+        next(err);
+      }
+    });
 };
 
 const getCurrentUser = (req, res, next) => {
@@ -102,10 +103,9 @@ const updateUser = (req, res, next) => {
   )
     .then((updatedUser) => {
       if (!updatedUser) {
-        next(new NotFoundError('User not found'));
-      } else {
-        return res.send(updatedUser);
+        return next(new NotFoundError('User not found'));
       }
+      return res.send(updatedUser);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
