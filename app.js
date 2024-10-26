@@ -5,7 +5,7 @@ const cors = require('cors');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const mainRouter = require('./routes/index');
-const NotFoundError = require('./utils/errors/NotFoundError');
+
 const errorHandler = require('./middlewares/error-handler');
 
 const app = express();
