@@ -24,7 +24,7 @@ module.exports.validateItemBody = celebrate({
     weather: Joi.string().required().valid('hot', 'warm', 'cold').messages({
       'string.empty': 'The "weather" field is required',
       'string.valid':
-        'The "weather" field can be either "hot", "warm", or "cold"',
+        'The "weather" field must be either "hot", "warm", or "cold"',
     }),
   }),
 });
