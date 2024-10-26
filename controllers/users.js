@@ -95,7 +95,7 @@ const getCurrentUser = (req, res, next) => {
 const updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
   const userId = req.user._id;
-  User.findByIdAndUpdate(
+  return User.findByIdAndUpdate(
     userId,
     { name, avatar },
     { new: true, runValidators: true }
