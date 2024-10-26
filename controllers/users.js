@@ -38,7 +38,7 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'A user with this email already exists') {
-        next(new ConflictError());
+        next(new ConflictError(err.message));
       } else if (err.name === 'ValidationError') {
         next(new BadRequestError('Invalid data'));
       } else {
@@ -69,7 +69,7 @@ const login = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === 'Incorrect email or password') {
-        next(new UnauthorizedError());
+        next(new UnauthorizedError(err.message));
       } else {
         next(err);
       }

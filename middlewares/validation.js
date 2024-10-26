@@ -20,6 +20,12 @@ module.exports.validateItemBody = celebrate({
       'string.empty': 'The "imageUrl" field must be filled in',
       'string.uri': 'The "imageUrl" field must be a valid url',
     }),
+
+    weather: Joi.string().required().valid('hot', 'warm', 'cold').messages({
+      'string.empty': 'The "weather" field is required',
+      'string.valid':
+        'The "weather" field can be either "hot", "warm", or "cold"',
+    }),
   }),
 });
 

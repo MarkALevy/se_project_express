@@ -30,7 +30,7 @@ const createItem = (req, res, next) => {
 
 const deleteItem = (req, res, next) => {
   const { itemId } = req.params;
-  return Item.findOne({ _id: itemId })
+  Item.findOne({ _id: itemId })
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
@@ -45,7 +45,8 @@ const deleteItem = (req, res, next) => {
       console.error(err);
       if (err.name === 'DocumentNotFoundError') {
         return next(new NotFoundError('Requested resource not found'));
-      } else if (err.name === 'CastError') {
+      }
+      if (err.name === 'CastError') {
         return next(new BadRequestError('Invalid data'));
       }
       return next(err);
