@@ -32,9 +32,9 @@ app.get('/crash-test', () => {
 
 app.use('/', mainRouter);
 
-// app.use((req, res, next) => {
-//   next(new NotFoundError('Requested resource not found'));
-// });
+app.use((req, res, next) => {
+  next(new NotFoundError('Requested resource not found'));
+});
 
 app.use(errorLogger);
 app.use(errors());
