@@ -24,8 +24,8 @@ mongoose
   .catch(console.error);
 app.use(
   cors({
-    origin: 'https://www.wtwr2024.serverpit.com',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: 'https://api.wtwr2024.serverpit.com',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   })
 );
 app.use(express.json());
