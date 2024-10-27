@@ -22,12 +22,18 @@ mongoose
     console.log('Connected to DB');
   })
   .catch(console.error);
+
 app.use(
   cors({
-    origin: 'https://wtwr2024.serverpit.com',
+    origin: [
+      'https://wtwr2024.serverpit.com',
+      'https://www.wtwr2024.serverpit.com',
+      'https://api.wtwr2024.serverpit.com',
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   })
 );
+
 app.use(express.json());
 app.use(requestLogger);
 
